@@ -1,4 +1,4 @@
-# 🎬 Huobao Drama - AI 短剧生成平台
+# 🎬 Dramify - AI 短剧生成平台
 
 <div align="center">
 
@@ -18,11 +18,11 @@
 
 ## 📖 项目简介
 
-Huobao Drama 是一个基于 AI 的短剧自动化生产平台，实现从剧本生成、角色设计、分镜制作到视频合成的全流程自动化。
+Dramify 是一个基于 AI 的短剧自动化生产平台，实现从剧本生成、角色设计、分镜制作到视频合成的全流程自动化。
 
-火宝短剧商业版地址：[火宝短剧商业版](https://drama.chatfire.site/shortvideo)
+Dramify短剧商业版地址：[Dramify短剧商业版](https://drama.chatfire.site/shortvideo)
 
-火宝小说生成：[火宝小说生成](https://marketing.chatfire.site/huobao-novel/)
+Dramify小说生成：[Dramify小说生成](https://marketing.chatfire.site/dramify-novel/)
 
 ### 🎯 核心价值
 
@@ -141,7 +141,7 @@ vim configs/config.yaml
 
 ```yaml
 app:
-  name: "Huobao Drama API"
+  name: "Dramify API"
   version: "1.0.0"
   debug: true # 开发环境设为true，生产环境设为false
 
@@ -184,8 +184,8 @@ ai:
 
 ```bash
 # 克隆项目
-git clone https://github.com/chatfire-AI/huobao-drama.git
-cd huobao-drama
+git clone https://github.com/chatfire-AI/dramify.git
+cd dramify
 
 # 安装Go依赖
 go mod download
@@ -241,7 +241,7 @@ go run main.go
 
 ### ☁️ 云端一键部署（推荐 3080Ti）
 
-👉 [优云智算，一键部署](https://www.compshare.cn/images/CaWEHpAA8t1H?referral_code=8hUJOaWz3YzG64FI2OlCiB&ytag=GPU_YY_YX_GitHub_huobaoai)
+👉 [优云智算，一键部署](https://www.compshare.cn/images/CaWEHpAA8t1H?referral_code=8hUJOaWz3YzG64FI2OlCiB&ytag=GPU_YY_YX_GitHub_dramifyai)
 
 > ⚠️ **注意**：云端部署方案数据请及时存储到本地
 
@@ -317,21 +317,21 @@ docker-compose down
 ```bash
 # 从 Docker Hub 运行
 docker run -d \
-  --name huobao-drama \
+  --name dramify \
   -p 5678:5678 \
   -v $(pwd)/data:/app/data \
   --restart unless-stopped \
-  huobao/huobao-drama:latest
+  dramify/dramify:latest
 
 # 查看日志
-docker logs -f huobao-drama
+docker logs -f dramify
 ```
 
 **本地构建**（可选）：
 
 ```bash
-docker build -t huobao-drama:latest .
-docker run -d --name huobao-drama -p 5678:5678 -v $(pwd)/data:/app/data huobao-drama:latest
+docker build -t dramify:latest .
+docker run -d --name dramify -p 5678:5678 -v $(pwd)/data:/app/data dramify:latest
 ```
 
 **Docker 部署优势：**
@@ -373,12 +373,12 @@ npm run build
 cd ..
 
 # 2. 编译后端
-go build -o huobao-drama .
+go build -o dramify .
 ```
 
 生成文件：
 
-- `huobao-drama` - 后端可执行文件
+- `dramify` - 后端可执行文件
 - `web/dist/` - 前端静态文件（已嵌入后端）
 
 #### 2. 准备部署文件
@@ -386,7 +386,7 @@ go build -o huobao-drama .
 需要上传到服务器的文件：
 
 ```
-huobao-drama            # 后端可执行文件
+dramify            # 后端可执行文件
 configs/config.yaml     # 配置文件
 data/                   # 数据目录（可选，首次运行自动创建）
 ```
@@ -395,45 +395,45 @@ data/                   # 数据目录（可选，首次运行自动创建）
 
 ```bash
 # 上传文件到服务器
-scp huobao-drama user@server:/opt/huobao-drama/
-scp configs/config.yaml user@server:/opt/huobao-drama/configs/
+scp dramify user@server:/opt/dramify/
+scp configs/config.yaml user@server:/opt/dramify/configs/
 
 # SSH登录服务器
 ssh user@server
 
 # 修改配置文件
-cd /opt/huobao-drama
+cd /opt/dramify
 vim configs/config.yaml
 # 设置mode为production
 # 配置域名和存储路径
 
 # 创建数据目录并设置权限（重要！）
 # 注意：将 YOUR_USER 替换为实际运行服务的用户名（如 www-data、ubuntu、deploy 等）
-sudo mkdir -p /opt/huobao-drama/data/storage
-sudo chown -R YOUR_USER:YOUR_USER /opt/huobao-drama/data
-sudo chmod -R 755 /opt/huobao-drama/data
+sudo mkdir -p /opt/dramify/data/storage
+sudo chown -R YOUR_USER:YOUR_USER /opt/dramify/data
+sudo chmod -R 755 /opt/dramify/data
 
 # 赋予执行权限
-chmod +x huobao-drama
+chmod +x dramify
 
 # 启动服务
-./huobao-drama
+./dramify
 ```
 
 #### 4. 使用 systemd 管理服务
 
-创建服务文件 `/etc/systemd/system/huobao-drama.service`:
+创建服务文件 `/etc/systemd/system/dramify.service`:
 
 ```ini
 [Unit]
-Description=Huobao Drama Service
+Description=Dramify Service
 After=network.target
 
 [Service]
 Type=simple
 User=YOUR_USER
-WorkingDirectory=/opt/huobao-drama
-ExecStart=/opt/huobao-drama/huobao-drama
+WorkingDirectory=/opt/dramify
+ExecStart=/opt/dramify/dramify
 Restart=on-failure
 RestartSec=10
 
@@ -448,9 +448,9 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable huobao-drama
-sudo systemctl start huobao-drama
-sudo systemctl status huobao-drama
+sudo systemctl enable dramify
+sudo systemctl start dramify
+sudo systemctl status dramify
 ```
 
 **⚠️ 常见问题：SQLite 写权限错误**
@@ -459,19 +459,19 @@ sudo systemctl status huobao-drama
 
 ```bash
 # 1. 确认当前运行服务的用户
-sudo systemctl status huobao-drama | grep "Main PID"
-ps aux | grep huobao-drama
+sudo systemctl status dramify | grep "Main PID"
+ps aux | grep dramify
 
 # 2. 修复权限（将 YOUR_USER 替换为实际用户名）
-sudo chown -R YOUR_USER:YOUR_USER /opt/huobao-drama/data
-sudo chmod -R 755 /opt/huobao-drama/data
+sudo chown -R YOUR_USER:YOUR_USER /opt/dramify/data
+sudo chmod -R 755 /opt/dramify/data
 
 # 3. 验证权限
-ls -la /opt/huobao-drama/data
+ls -la /opt/dramify/data
 # 应该显示所有者为运行服务的用户
 
 # 4. 重启服务
-sudo systemctl restart huobao-drama
+sudo systemctl restart dramify
 ```
 
 **原因说明**：
@@ -502,7 +502,7 @@ server {
 
     # 静态文件直接访问
     location /static/ {
-        alias /opt/huobao-drama/data/storage/;
+        alias /opt/dramify/data/storage/;
     }
 }
 ```
@@ -635,12 +635,12 @@ A: GORM 会在首次启动时自动创建表，检查日志确认迁移是否成
 
 ## 👨‍💻 关于我们
 
-**AI 火宝 - AI 工作室创业中**
+**AI Dramify - AI 工作室创业中**
 
 - 🏠 **位置**: 中国南京
 - 🚀 **状态**: 创业中
 - 📧 **Email**: [18550175439@163.com](mailto:18550175439@163.com)
-- 🐙 **GitHub**: [https://github.com/chatfire-AI/huobao-drama](https://github.com/chatfire-AI/huobao-drama)
+- 🐙 **GitHub**: [https://github.com/chatfire-AI/dramify](https://github.com/chatfire-AI/dramify)
 
 > _"让 AI 帮我们做更有创造力的事"_
 
@@ -659,7 +659,7 @@ A: GORM 会在首次启动时自动创建表，检查日志确认迁移是否成
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=chatfire-AI/huobao-drama&type=date&legend=top-left)](https://www.star-history.com/#chatfire-AI/huobao-drama&type=date&legend=top-left)
-Made with ❤️ by Huobao Team
+[![Star History Chart](https://api.star-history.com/svg?repos=chatfire-AI/dramify&type=date&legend=top-left)](https://www.star-history.com/#chatfire-AI/dramify&type=date&legend=top-left)
+Made with ❤️ by Dramify Team
 
 </div>

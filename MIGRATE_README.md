@@ -15,7 +15,7 @@ go run cmd/migrate/main.go
 
 ```bash
 # 进入容器
-docker exec -it huobao-drama sh
+docker exec -it dramify sh
 
 # 在容器内执行迁移脚本
 ./migrate
@@ -27,7 +27,7 @@ exit
 或者直接执行（不进入容器）：
 
 ```bash
-docker exec huobao-drama ./migrate
+docker exec dramify ./migrate
 ```
 
 ## 配置要求

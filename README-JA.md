@@ -1,4 +1,4 @@
-# 🎬 Huobao Drama - AI ショートドラマ制作プラットフォーム
+# 🎬 Dramify - AI ショートドラマ制作プラットフォーム
 
 <div align="center">
 
@@ -18,11 +18,11 @@
 
 ## 📖 概要
 
-Huobao Drama は、脚本生成、キャラクターデザイン、絵コンテ作成から動画合成までの全ワークフローを自動化する AI 駆動のショートドラマ制作プラットフォームです。
+Dramify は、脚本生成、キャラクターデザイン、絵コンテ作成から動画合成までの全ワークフローを自動化する AI 駆動のショートドラマ制作プラットフォームです。
 
-火宝短剧商业版地址：[火宝短剧商业版](https://drama.chatfire.site/shortvideo)
+Dramify短剧商业版地址：[Dramify短剧商业版](https://drama.chatfire.site/shortvideo)
 
-火宝小说生成：[火宝小说生成](https://marketing.chatfire.site/huobao-novel/)
+Dramify小说生成：[Dramify小说生成](https://marketing.chatfire.site/dramify-novel/)
 
 ### 🎯 主要機能
 
@@ -141,7 +141,7 @@ vim configs/config.yaml
 
 ```yaml
 app:
-  name: "Huobao Drama API"
+  name: "Dramify API"
   version: "1.0.0"
   debug: true # 開発環境ではtrue、本番環境ではfalseに設定
 
@@ -184,8 +184,8 @@ ai:
 
 ```bash
 # プロジェクトをクローン
-git clone https://github.com/chatfire-AI/huobao-drama.git
-cd huobao-drama
+git clone https://github.com/chatfire-AI/dramify.git
+cd dramify
 
 # Go依存関係をインストール
 go mod download
@@ -241,7 +241,7 @@ go run main.go
 
 ### ☁️ クラウドワンクリックデプロイ（推奨 3080Ti）
 
-👉 [优云智算，一键部署](https://www.compshare.cn/images/CaWEHpAA8t1H?referral_code=8hUJOaWz3YzG64FI2OlCiB&ytag=GPU_YY_YX_GitHub_huobaoai)
+👉 [优云智算，一键部署](https://www.compshare.cn/images/CaWEHpAA8t1H?referral_code=8hUJOaWz3YzG64FI2OlCiB&ytag=GPU_YY_YX_GitHub_dramifyai)
 
 > ⚠️ **注意**：クラウドデプロイを使用する場合は、データを速やかにローカルストレージに保存してください
 
@@ -317,21 +317,21 @@ docker-compose down
 ```bash
 # Docker Hubから実行
 docker run -d \
-  --name huobao-drama \
+  --name dramify \
   -p 5678:5678 \
   -v $(pwd)/data:/app/data \
   --restart unless-stopped \
-  huobao/huobao-drama:latest
+  dramify/dramify:latest
 
 # ログを表示
-docker logs -f huobao-drama
+docker logs -f dramify
 ```
 
 **ローカルビルド**（オプション）：
 
 ```bash
-docker build -t huobao-drama:latest .
-docker run -d --name huobao-drama -p 5678:5678 -v $(pwd)/data:/app/data huobao-drama:latest
+docker build -t dramify:latest .
+docker run -d --name dramify -p 5678:5678 -v $(pwd)/data:/app/data dramify:latest
 ```
 
 **Docker デプロイの利点：**
@@ -373,12 +373,12 @@ npm run build
 cd ..
 
 # 2. バックエンドをコンパイル
-go build -o huobao-drama .
+go build -o dramify .
 ```
 
 生成ファイル：
 
-- `huobao-drama` - バックエンド実行ファイル
+- `dramify` - バックエンド実行ファイル
 - `web/dist/` - フロントエンド静的ファイル（バックエンドに埋め込み）
 
 #### 2. デプロイファイルの準備
@@ -386,7 +386,7 @@ go build -o huobao-drama .
 サーバーにアップロードするファイル：
 
 ```
-huobao-drama            # バックエンド実行ファイル
+dramify            # バックエンド実行ファイル
 configs/config.yaml     # 設定ファイル
 data/                   # データディレクトリ（オプション、初回実行時に自動作成）
 ```
@@ -395,45 +395,45 @@ data/                   # データディレクトリ（オプション、初回
 
 ```bash
 # ファイルをサーバーにアップロード
-scp huobao-drama user@server:/opt/huobao-drama/
-scp configs/config.yaml user@server:/opt/huobao-drama/configs/
+scp dramify user@server:/opt/dramify/
+scp configs/config.yaml user@server:/opt/dramify/configs/
 
 # サーバーにSSH接続
 ssh user@server
 
 # 設定ファイルを編集
-cd /opt/huobao-drama
+cd /opt/dramify
 vim configs/config.yaml
 # modeをproductionに設定
 # ドメインとストレージパスを設定
 
 # データディレクトリを作成し権限を設定（重要！）
 # 注意: YOUR_USERを実際にサービスを実行するユーザー名に置き換え（例: www-data、ubuntu、deploy）
-sudo mkdir -p /opt/huobao-drama/data/storage
-sudo chown -R YOUR_USER:YOUR_USER /opt/huobao-drama/data
-sudo chmod -R 755 /opt/huobao-drama/data
+sudo mkdir -p /opt/dramify/data/storage
+sudo chown -R YOUR_USER:YOUR_USER /opt/dramify/data
+sudo chmod -R 755 /opt/dramify/data
 
 # 実行権限を付与
-chmod +x huobao-drama
+chmod +x dramify
 
 # サービスを起動
-./huobao-drama
+./dramify
 ```
 
 #### 4. systemd でサービス管理
 
-サービスファイル `/etc/systemd/system/huobao-drama.service` を作成：
+サービスファイル `/etc/systemd/system/dramify.service` を作成：
 
 ```ini
 [Unit]
-Description=Huobao Drama Service
+Description=Dramify Service
 After=network.target
 
 [Service]
 Type=simple
 User=YOUR_USER
-WorkingDirectory=/opt/huobao-drama
-ExecStart=/opt/huobao-drama/huobao-drama
+WorkingDirectory=/opt/dramify
+ExecStart=/opt/dramify/dramify
 Restart=on-failure
 RestartSec=10
 
@@ -448,9 +448,9 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable huobao-drama
-sudo systemctl start huobao-drama
-sudo systemctl status huobao-drama
+sudo systemctl enable dramify
+sudo systemctl start dramify
+sudo systemctl status dramify
 ```
 
 **⚠️ よくある問題: SQLite 書き込み権限エラー**
@@ -459,19 +459,19 @@ sudo systemctl status huobao-drama
 
 ```bash
 # 1. サービスを実行中のユーザーを確認
-sudo systemctl status huobao-drama | grep "Main PID"
-ps aux | grep huobao-drama
+sudo systemctl status dramify | grep "Main PID"
+ps aux | grep dramify
 
 # 2. 権限を修正（YOUR_USERを実際のユーザー名に置き換え）
-sudo chown -R YOUR_USER:YOUR_USER /opt/huobao-drama/data
-sudo chmod -R 755 /opt/huobao-drama/data
+sudo chown -R YOUR_USER:YOUR_USER /opt/dramify/data
+sudo chmod -R 755 /opt/dramify/data
 
 # 3. 権限を確認
-ls -la /opt/huobao-drama/data
+ls -la /opt/dramify/data
 # サービスを実行するユーザーが所有者として表示されるはず
 
 # 4. サービスを再起動
-sudo systemctl restart huobao-drama
+sudo systemctl restart dramify
 ```
 
 **原因：**
@@ -502,7 +502,7 @@ server {
 
     # 静的ファイルへの直接アクセス
     location /static/ {
-        alias /opt/huobao-drama/data/storage/;
+        alias /opt/dramify/data/storage/;
     }
 }
 ```
@@ -635,13 +635,13 @@ Issue と Pull Request を歓迎します！
 
 ## 👨‍💻 私たちについて
 
-**AI 火宝 - AI スタジオ起業中**
+**AI Dramify - AI スタジオ起業中**
 
 - 🏠 **所在地**: 中国南京
 - 🚀 **ステータス**: 起業中
 - 📧 **Email**: [18550175439@163.com](mailto:18550175439@163.com)
 - 💬 **WeChat**: dangbao1117 （個人 WeChat - 技術的な質問には対応しません）
-- 🐙 **GitHub**: [https://github.com/chatfire-AI/huobao-drama](https://github.com/chatfire-AI/huobao-drama)
+- 🐙 **GitHub**: [https://github.com/chatfire-AI/dramify](https://github.com/chatfire-AI/dramify)
 
 > _「AI に私たちのより創造的なことを手伝ってもらおう」_
 
@@ -660,8 +660,8 @@ Issue と Pull Request を歓迎します！
 
 ## Star 履歴
 
-[![Star History Chart](https://api.star-history.com/svg?repos=chatfire-AI/huobao-drama&type=date&legend=top-left)](https://www.star-history.com/#chatfire-AI/huobao-drama&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=chatfire-AI/dramify&type=date&legend=top-left)](https://www.star-history.com/#chatfire-AI/dramify&type=date&legend=top-left)
 
-Made with ❤️ by Huobao Team
+Made with ❤️ by Dramify Team
 
 </div>
