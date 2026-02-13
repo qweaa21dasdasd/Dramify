@@ -8,7 +8,7 @@ server:
   port: 5678
   host: "0.0.0.0"
   cors_origins:
-    - "http://localhost:3012"
+    - "*"
   read_timeout: 600
   write_timeout: 600
 
