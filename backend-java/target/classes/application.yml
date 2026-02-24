@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: Dramify API
+  datasource:
+    url: jdbc:sqlite:data/drama.db
+    driver-class-name: org.sqlite.JDBC
+    username: 
+    password: 
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: 5678
+
+logging:
+  level:
+    com.dramagenerator.backend: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+
+app:
+  storage:
+    local-path: ./data/storage
+    base-url: http://localhost:5678/static

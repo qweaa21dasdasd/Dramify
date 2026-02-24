@@ -1,0 +1,13 @@
+package com.dramagenerator.backend.repository;
+
+import com.dramagenerator.backend.model.VideoMerge;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface VideoMergeRepository extends JpaRepository<VideoMerge, Long> {
+    List<VideoMerge> findByEpisodeId(Long episodeId);
+    List<VideoMerge> findByTaskId(String taskId);
+}
