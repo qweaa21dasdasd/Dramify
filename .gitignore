@@ -1,0 +1,8 @@
+target/
+.vscode/
+.idea/
+*.class
+*.log
+.DS_Store
+backend-java/target/
+backend-java/data/

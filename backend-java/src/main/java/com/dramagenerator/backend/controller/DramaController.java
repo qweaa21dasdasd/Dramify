@@ -31,8 +31,9 @@ public class DramaController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Drama>> listDramas(DramaListQuery query) {
-        return ResponseEntity.ok(dramaService.listDramas(query));
+    public ResponseEntity<PaginatedResponse<Drama>> listDramas(DramaListQuery query) {
+        Page<Drama> page = dramaService.listDramas(query);
+        return ResponseEntity.ok(PaginatedResponse.from(page));
     }
 
     @PutMapping("/{id}")
@@ -51,7 +52,7 @@ public class DramaController {
         return ResponseEntity.ok(dramaService.getDramaStats());
     }
 
-    @PostMapping("/{id}/outline")
+    @PutMapping("/{id}/outline")
     public ResponseEntity<Void> saveOutline(@PathVariable Long id, @RequestBody @Validated SaveOutlineRequest request) {
         dramaService.saveOutline(id, request);
         return ResponseEntity.ok().build();
@@ -62,19 +63,19 @@ public class DramaController {
         return ResponseEntity.ok(dramaService.getCharacters(id, episodeId));
     }
 
-    @PostMapping("/{id}/characters")
+    @PutMapping("/{id}/characters")
     public ResponseEntity<Void> saveCharacters(@PathVariable Long id, @RequestBody @Validated SaveCharactersRequest request) {
         dramaService.saveCharacters(id, request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/episodes")
+    @PutMapping("/{id}/episodes")
     public ResponseEntity<Void> saveEpisodes(@PathVariable Long id, @RequestBody @Validated SaveEpisodesRequest request) {
         dramaService.saveEpisodes(id, request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{id}/progress")
+    @PutMapping("/{id}/progress")
     public ResponseEntity<Void> saveProgress(@PathVariable Long id, @RequestBody @Validated SaveProgressRequest request) {
         dramaService.saveProgress(id, request);
         return ResponseEntity.ok().build();
