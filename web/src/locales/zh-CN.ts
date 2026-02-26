@@ -397,7 +397,7 @@ export default {
     prevStep: '上一步',
     nextStepSplitShots: '下一步：拆分分镜',
     reExtractConfirmTitle: '重新提取确认',
-    reExtractConfirmMessage: '重新提取将覆盖已提取的角色和场景（包括已生成的图片），确定继续吗？',
+    reExtractConfirmMessage: '重新提取将尝试保留已有图片的角色和场景，仅生成或更新未生成图片的部分。确定继续吗？',
     startReExtracting: '开始重新提取，请稍候...',
     regenerateShots: '重新生成分镜',
     batchGenerateSelected: '批量生成选中场景',

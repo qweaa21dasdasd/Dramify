@@ -846,7 +846,7 @@ const propsCount = computed(() => drama.value?.props?.length || 0);
 const sortedEpisodes = computed(() => {
   if (!drama.value?.episodes) return [];
   return [...drama.value.episodes].sort(
-    (a, b) => a.episode_number - b.episode_number,
+    (a, b) => (a.episodeNumber || a.episode_number) - (b.episodeNumber || b.episode_number),
   );
 });
 
@@ -945,7 +945,7 @@ const enterEpisodeWorkflow = (episode: any) => {
     name: "EpisodeWorkflowNew",
     params: {
       id: route.params.id,
-      episodeNumber: episode.episode_number,
+      episodeNumber: episode.episodeNumber || episode.episode_number,
     },
   });
 };
@@ -953,7 +953,7 @@ const enterEpisodeWorkflow = (episode: any) => {
 const deleteEpisode = async (episode: any) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除第${episode.episode_number}章吗？此操作将同时删除该章节的所有相关数据（角色、场景、分镜等）。`,
+      `确定要删除第${episode.episodeNumber || episode.episode_number}章吗？此操作将同时删除该章节的所有相关数据（角色、场景、分镜等）。`,
       "删除确认",
       {
         confirmButtonText: "确定",
@@ -965,9 +965,9 @@ const deleteEpisode = async (episode: any) => {
     // 过滤掉要删除的章节
     const existingEpisodes = drama.value?.episodes || [];
     const updatedEpisodes = existingEpisodes
-      .filter((ep) => ep.episode_number !== episode.episode_number)
+      .filter((ep) => (ep.episodeNumber || ep.episode_number) !== (episode.episodeNumber || episode.episode_number))
       .map((ep) => ({
-        episode_number: ep.episode_number,
+        episode_number: ep.episodeNumber || ep.episode_number,
         title: ep.title,
         script_content: ep.script_content,
         description: ep.description,
@@ -978,7 +978,7 @@ const deleteEpisode = async (episode: any) => {
     // 保存更新后的章节列表
     await dramaAPI.saveEpisodes(drama.value!.id, updatedEpisodes);
 
-    ElMessage.success(`第${episode.episode_number}章删除成功`);
+    ElMessage.success(`第${episode.episodeNumber || episode.episode_number}章删除成功`);
     await loadDramaData();
   } catch (error: any) {
     if (error !== "cancel") {
