@@ -2,15 +2,17 @@ spring:
   application:
     name: Dramify API
   datasource:
-    url: jdbc:sqlite:data/drama.db
-    driver-class-name: org.sqlite.JDBC
-    username: 
+    url: jdbc:mysql://localhost:3306/drama_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
     password: 
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   servlet:
     multipart:
       max-file-size: 100MB
@@ -24,6 +26,12 @@ logging:
     com.dramagenerator.backend: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
+  file:
+    name: logs/backend.log
+  logback:
+    rollingpolicy:
+      max-history: 7
+      max-file-size: 10MB
 
 app:
   storage:

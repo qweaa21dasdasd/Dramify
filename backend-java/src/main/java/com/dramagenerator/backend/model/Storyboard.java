@@ -20,10 +20,12 @@ public class Storyboard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "episode_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Episode episode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scene_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Scene scene;
 
     @Column(name = "storyboard_number", nullable = false)

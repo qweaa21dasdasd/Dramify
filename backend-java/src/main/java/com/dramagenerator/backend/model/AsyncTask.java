@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class AsyncTask {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(length = 36)
     private String id;
 
     @Column(length = 50, nullable = false)

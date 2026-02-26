@@ -207,21 +207,44 @@ public class DramaServiceImpl implements DramaService {
         Drama drama = dramaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Drama not found"));
         
-        List<Character> savedCharacters = new ArrayList<>();
+        // Find existing characters to reuse by name
+        List<Character> existingCharacters = characterRepository.findByDramaId(id);
+        Map<String, Character> existingCharMap = new HashMap<>();
+        for (Character c : existingCharacters) {
+            existingCharMap.put(c.getName(), c);
+        }
+        
+        List<Character> targetCharacters = new ArrayList<>();
         
         for (Character charReq : request.getCharacters()) {
-            Character character;
+            Character character = null;
+            
+            // 1. Try to update by ID
             if (charReq.getId() != null) {
-                character = characterRepository.findById(charReq.getId())
-                        .orElseThrow(() -> new RuntimeException("Character not found: " + charReq.getId()));
-                // Update fields
-                character.setName(charReq.getName());
-                character.setRole(charReq.getRole());
-                character.setDescription(charReq.getDescription());
-                character.setPersonality(charReq.getPersonality());
-                character.setAppearance(charReq.getAppearance());
-                character.setImageUrl(charReq.getImageUrl());
-            } else {
+                Optional<Character> existingOpt = characterRepository.findById(charReq.getId());
+                if (existingOpt.isPresent() && existingOpt.get().getDrama().getId().equals(id)) {
+                    character = existingOpt.get();
+                    // Update fields
+                    character.setName(charReq.getName());
+                    character.setRole(charReq.getRole());
+                    character.setDescription(charReq.getDescription());
+                    character.setPersonality(charReq.getPersonality());
+                    character.setAppearance(charReq.getAppearance());
+                    character.setImageUrl(charReq.getImageUrl());
+                    character = characterRepository.save(character);
+                }
+            }
+            
+            // 2. Try to reuse by name if ID not provided or not found
+            if (character == null && existingCharMap.containsKey(charReq.getName())) {
+                character = existingCharMap.get(charReq.getName());
+                // Optional: Update fields if reused? Go version doesn't update if reused by name, only logs it.
+                // We'll stick to Go logic: just reuse.
+                log.info("Reusing existing character: {} (ID: {})", character.getName(), character.getId());
+            }
+            
+            // 3. Create new if not found
+            if (character == null) {
                 character = new Character();
                 character.setDrama(drama);
                 character.setName(charReq.getName());
@@ -230,13 +253,20 @@ public class DramaServiceImpl implements DramaService {
                 character.setPersonality(charReq.getPersonality());
                 character.setAppearance(charReq.getAppearance());
                 character.setImageUrl(charReq.getImageUrl());
+                character = characterRepository.save(character);
+                log.info("Created new character: {} (ID: {})", character.getName(), character.getId());
             }
-            savedCharacters.add(characterRepository.save(character));
+            
+            targetCharacters.add(character);
         }
         
         if (request.getEpisodeId() != null) {
             Episode episode = episodeRepository.findById(request.getEpisodeId())
                     .orElseThrow(() -> new RuntimeException("Episode not found"));
+            
+            if (!episode.getDrama().getId().equals(id)) {
+                throw new RuntimeException("Episode does not belong to this drama");
+            }
             
             // Add characters to episode if not already present
             List<Character> episodeCharacters = episode.getCharacters();
@@ -245,9 +275,9 @@ public class DramaServiceImpl implements DramaService {
                 episode.setCharacters(episodeCharacters);
             }
             
-            for (Character savedChar : savedCharacters) {
-                if (!episodeCharacters.contains(savedChar)) {
-                    episodeCharacters.add(savedChar);
+            for (Character targetChar : targetCharacters) {
+                if (!episodeCharacters.contains(targetChar)) {
+                    episodeCharacters.add(targetChar);
                 }
             }
             episodeRepository.save(episode);
@@ -260,34 +290,22 @@ public class DramaServiceImpl implements DramaService {
         Drama drama = dramaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Drama not found"));
         
-        // Find existing episodes
-        List<Episode> existingEpisodes = episodeRepository.findByDramaId(id);
-        Map<Integer, Episode> episodeMap = new HashMap<>();
-        for (Episode ep : existingEpisodes) {
-            episodeMap.put(ep.getEpisodeNumber(), ep);
-        }
+        // Delete all existing episodes for this drama
+        episodeRepository.deleteByDramaId(id);
         
+        // Create new episodes
         for (SaveEpisodesRequest.EpisodeDTO epReq : request.getEpisodes()) {
-            Episode episode = episodeMap.get(epReq.getEpisodeNumber());
-            if (episode == null) {
-                episode = new Episode();
-                episode.setDrama(drama);
-                episode.setEpisodeNumber(epReq.getEpisodeNumber());
-                episode.setStatus("draft");
-            }
-            
+            Episode episode = new Episode();
+            episode.setDrama(drama);
+            episode.setEpisodeNumber(epReq.getEpisodeNumber());
             episode.setTitle(epReq.getTitle() != null ? epReq.getTitle() : "第" + epReq.getEpisodeNumber() + "集");
             episode.setDescription(epReq.getDescription());
             episode.setScriptContent(epReq.getScriptContent());
             episode.setDuration(epReq.getDuration() != null ? epReq.getDuration() : 0);
+            episode.setStatus(epReq.getStatus() != null ? epReq.getStatus() : "draft");
             
             episodeRepository.save(episode);
-            episodeMap.remove(epReq.getEpisodeNumber());
         }
-        
-        // Delete episodes that are not in the request? 
-        // For now, let's keep them to be safe, or we can delete them if that's the intended behavior.
-        // The Go code did a full delete, which is risky. Updating is safer.
     }
 
     @Override

@@ -20,5 +20,7 @@ public class SaveEpisodesRequest {
         private String scriptContent;
         
         private Integer duration;
+        
+        private String status;
     }
 }

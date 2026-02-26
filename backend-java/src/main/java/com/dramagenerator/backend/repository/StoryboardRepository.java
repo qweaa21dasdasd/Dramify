@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface StoryboardRepository extends JpaRepository<Storyboard, Long> {
     List<Storyboard> findByEpisodeId(Long episodeId);
+    void deleteByEpisodeId(Long episodeId);
     List<Storyboard> findBySceneId(Long sceneId);
 }

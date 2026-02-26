@@ -20,6 +20,7 @@ public class Episode {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drama_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Drama drama;
 
     @Column(name = "episode_number", nullable = false)

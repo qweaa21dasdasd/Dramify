@@ -10,5 +10,6 @@ import java.util.List;
 public interface ImageGenerationRepository extends JpaRepository<ImageGeneration, Long> {
     List<ImageGeneration> findByDramaId(Long dramaId);
     List<ImageGeneration> findByStoryboardId(Long storyboardId);
+    List<ImageGeneration> findBySceneId(Long sceneId);
     List<ImageGeneration> findByTaskId(String taskId);
 }

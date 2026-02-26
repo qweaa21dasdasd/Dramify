@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface EpisodeRepository extends JpaRepository<Episode, Long> {
     List<Episode> findByDramaId(Long dramaId);
+    void deleteByDramaId(Long dramaId);
 }

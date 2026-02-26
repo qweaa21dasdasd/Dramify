@@ -7,5 +7,6 @@ import java.util.List;
 public interface ImageGenerationService {
     ImageGeneration generateImage(GenerateImageRequest request);
     ImageGeneration getImageGeneration(Long id);
+    void processImageGeneration(Long imageGenId);
     List<ImageGeneration> listImageGenerations(Long dramaId, Long sceneId, Long storyboardId, String frameType, String status, int page, int pageSize);
 }

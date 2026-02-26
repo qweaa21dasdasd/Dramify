@@ -19,6 +19,16 @@ import java.util.Map;
 public class DramaController {
 
     private final DramaService dramaService;
+    private final com.dramagenerator.backend.service.VideoMergeService videoMergeService;
+
+    @PostMapping("/{id}/episodes/{episodeId}/finalize")
+    public ResponseEntity<Map<String, Object>> finalizeEpisode(
+            @PathVariable Long id, 
+            @PathVariable String episodeId, 
+            @RequestBody FinalizeEpisodeRequest request) {
+        // Ensure episode belongs to drama if needed
+        return ResponseEntity.ok(videoMergeService.finalizeEpisode(episodeId, request));
+    }
 
     @PostMapping
     public ResponseEntity<Drama> createDrama(@RequestBody @Validated CreateDramaRequest request) {

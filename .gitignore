@@ -6,3 +6,7 @@ target/
 .DS_Store
 backend-java/target/
 backend-java/data/
+backend-java/logs/
+huobao-drama/node_modules/
+huobao-drama/dist/
+huobao-drama/.nuxt/

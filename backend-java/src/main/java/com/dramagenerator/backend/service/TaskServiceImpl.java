@@ -27,6 +27,12 @@ public class TaskServiceImpl implements TaskService {
         task.setType(type);
         task.setResourceId(resourceId);
         task.setStatus("pending");
+        // Remove manual ID setting, let UUID generator handle it? 
+        // Or if we need string ID, make sure entity uses UUID generator correctly.
+        // JPA with @GeneratedValue(strategy = GenerationType.UUID) should work if provider supports it.
+        // Hibernate 6 supports UUID generation.
+        task.setCreatedAt(LocalDateTime.now());
+        task.setProgress(0);
         return taskRepository.save(task);
     }
 
@@ -34,13 +40,18 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void updateTaskStatus(String taskId, String status, Integer progress, String message) {
         AsyncTask task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElse(null); // Changed to orElse(null) to handle async race condition gracefully?
+                
+        if (task == null) {
+            log.warn("Task not found for update: " + taskId);
+            return;
+        }
         
         task.setStatus(status);
         if (progress != null) task.setProgress(progress);
         if (message != null) task.setMessage(message);
         
-        if ("completed".equals(status)) {
+        if ("completed".equals(status) || "failed".equals(status)) {
             task.setCompletedAt(LocalDateTime.now());
         }
         
@@ -51,7 +62,12 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void updateTaskResult(String taskId, Map<String, Object> result) {
         AsyncTask task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElse(null);
+        
+        if (task == null) {
+            log.warn("Task not found for result update: " + taskId);
+            return;
+        }
         
         try {
             task.setResult(objectMapper.writeValueAsString(result));
@@ -61,9 +77,7 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.save(task);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize task result", e);
-            task.setError("Failed to serialize result");
-            task.setStatus("failed");
-            taskRepository.save(task);
+            updateTaskError(taskId, "Failed to serialize result");
         }
     }
 
@@ -71,10 +85,16 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void updateTaskError(String taskId, String error) {
         AsyncTask task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElse(null);
+                
+        if (task == null) {
+            log.warn("Task not found for error update: " + taskId);
+            return;
+        }
         
         task.setError(error);
         task.setStatus("failed");
+        task.setCompletedAt(LocalDateTime.now());
         taskRepository.save(task);
     }
 
@@ -82,6 +102,6 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = true)
     public AsyncTask getTask(String taskId) {
         return taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElse(null);
     }
 }

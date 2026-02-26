@@ -7,5 +7,6 @@ import java.util.List;
 @Data
 public class SaveCharactersRequest {
     private List<Character> characters;
+    @com.fasterxml.jackson.annotation.JsonProperty("episode_id")
     private Long episodeId;
 }

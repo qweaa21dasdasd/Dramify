@@ -20,6 +20,7 @@ public class Prop {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drama_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Drama drama;
 
     @Column(length = 100, nullable = false)
@@ -55,5 +56,6 @@ public class Prop {
     private LocalDateTime deletedAt;
 
     @ManyToMany(mappedBy = "props")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Storyboard> storyboards;
 }

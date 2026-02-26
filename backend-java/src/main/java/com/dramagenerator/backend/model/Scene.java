@@ -19,10 +19,12 @@ public class Scene {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drama_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Drama drama;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "episode_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Episode episode;
 
     @Column(length = 200, nullable = false)
